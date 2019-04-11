@@ -57,7 +57,9 @@ module Storage = struct
       let t = L.table t in
       match L.LRU.find key !t with
       | None -> Lwt.return_none
-      | Some (v, t') -> t := t'; Lwt.return (Some v)
+      | Some v ->
+        t := L.LRU.promote key !t;
+        Lwt.return (Some v)
 
     (* cases that should result in a valid mapping:
        neither side is already mapped *)
